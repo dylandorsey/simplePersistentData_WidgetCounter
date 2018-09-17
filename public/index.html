@@ -38,7 +38,9 @@
     $(document).ready(function () {
         let widgetsToAdd = document.getElementById("countWidgetsToAdd");
         let widgetAddButton = document.getElementById("buttonAdd");
-        let handleClick = function (event) {
+        let widgetSubtractButton = document.getElementById("buttonSubtract");
+
+        let handleClickAdd = function () {
             let count = $(widgetsToAdd).val();
             count ++;
             $(widgetsToAdd).val(count);
@@ -46,7 +48,16 @@
             console.log($(widgetsToAdd).val());
         }
 
-        $(widgetAddButton).on("click", handleClick);
+        let handleClickSubtract = function () {
+            let count = $(widgetsToAdd).val();
+            count --;
+            $(widgetsToAdd).val(count);
+            $(widgetsToAdd).text(count);
+            console.log($(widgetsToAdd).val());
+        }
+
+        $(widgetAddButton).on("click", handleClickAdd);
+        $(widgetSubtractButton).on("click", handleClickSubtract);
     })
 </script>
 
