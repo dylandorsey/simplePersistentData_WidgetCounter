@@ -38,14 +38,19 @@
     $(document).ready(function () {
         let widgetsToAdd = document.getElementById("countWidgetsToAdd");
         let widgetAddButton = document.getElementById("buttonAdd");
+        let widgetSubmitButton = document.getElementById("buttonSubmit");
         let widgetSubtractButton = document.getElementById("buttonSubtract");
+
 
         let handleClickAdd = function () {
             let count = $(widgetsToAdd).val();
             count ++;
             $(widgetsToAdd).val(count);
             $(widgetsToAdd).text(count);
-            console.log($(widgetsToAdd).val());
+        }
+
+        let handleClickSubmit = function () {
+            console.log('init handleClickSubmit.');
         }
 
         let handleClickSubtract = function () {
@@ -53,11 +58,12 @@
             count --;
             $(widgetsToAdd).val(count);
             $(widgetsToAdd).text(count);
-            console.log($(widgetsToAdd).val());
         }
+
 
         $(widgetAddButton).on("click", handleClickAdd);
         $(widgetSubtractButton).on("click", handleClickSubtract);
+        $(widgetSubmitButton).on("click", handleClickSubmit);
     })
 </script>
 
