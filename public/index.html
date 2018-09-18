@@ -41,12 +41,22 @@
         let widgetSubtractButton = document.getElementById("buttonSubtract");
         let totalWidgetsDisplay = document.getElementById("displayTotalWidgets");
 
+        // let resetLocalStorage = function () {
+        //     localStorage.setItem("totalWidgets", Number(0));
+        // }
+        
+        // // reset quantity of widgets upon page load
+        // resetLocalStorage();
+
         // return local storage value for total widgets
         let getLocalStorage = function () {
             let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets");
+            console.log(`totalWidgetsFromLocalStorage = ${totalWidgetsFromLocalStorage}`);
             if (totalWidgetsFromLocalStorage) {
+                console.log(`total widgets from storage: ${totalWidgetsFromLocalStorage}`)
                 return totalWidgetsFromLocalStorage;
             } else {
+                console.log(`total widgets not yet stored in localStorage. Returning 0.`)
                 return 0;
             }
         }// end return local storage value for total widgets
@@ -72,15 +82,17 @@
         }
 
         let handleClickSubmit = function (widgetsToAdd) {
+            // assign value of total widgets to a variable
+            totalWidgets = getLocalStorage();
+            // end assign value of total widgets to a variable
             console.log('init handleClickSubmit.');
-            console.log(`${$(totalWidgets).text()}`)
+            console.log(`Total widgets: ${totalWidgets}`);
             console.log(`widgetsToAdd: ${widgetsToAdd}`);
             // Set total widgets to localStorage
-            totalWidgets = totalWidgets + widgetsToAdd;
-            localStorage.setItem("totalWidgets", 0);
+            totalWidgets = Number(Number(totalWidgets) + Number(widgetsToAdd));
             localStorage.setItem("totalWidgets", totalWidgets);
             updateTotalWidgetsDisplay(totalWidgets);
-            
+
         }
 
         let handleClickSubtract = function () {
@@ -93,7 +105,7 @@
 
         $(widgetAddButton).on("click", handleClickAdd);
         $(widgetSubtractButton).on("click", handleClickSubtract);
-        $(widgetSubmitButton).on("click", function () { handleClickSubmit($(widgetsToAdd).val())});
+        $(widgetSubmitButton).on("click", function () { handleClickSubmit($(widgetsToAdd).val()) });
     })
 </script>
 
