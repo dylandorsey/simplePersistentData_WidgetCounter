@@ -14,29 +14,29 @@
 </header>
 
 <body>
-    <div>
+    <!-- <div>
         <div>
             <h4>Add widgets</h4>
             <p>Widgets to add:</p>
             <p id="countWidgetsToAdd">0</p>
-            <button id="buttonAdd">+</button>
-            <button id="buttonSubtract">-</button>
-            <button id="buttonSubmit">submit</button>
+            <button class="buttonAdd">+</button>
+            <button class="buttonSubtract">-</button>
+            <button class="buttonSubmit">submit</button>
         </div>
     </div>
-    <div>
-        <h4>Total widgets:</h4>
-        <p id="displayTotalWidgets">0</p>
-        <button id="buttonClearWidgets">Clear widgets</button>
+    <div> -->
+    <h4>Total widgets:</h4>
+    <p id="displayTotalWidgets">0</p>
+    <button id="buttonClearWidgets">Clear widgets</button>
     </div>
     <div>
         <h2>Add widgets by card</h2>`
         <div class="card" id="widgetA">
             <div class="container">
-                <h4><b>Widget A</b></h4>
+                <h4><b class="widgetName" data-widgetname="Widget A">Widget A</b></h4>
                 <span>
                     <p>Weight:</p>
-                    <p data-type="weight ">1</p>
+                    <p class="widgetWeight" data-widgetweight="1">1</p>
                     <p class="unit ">lb</p>
                 </span>
                 <div>
@@ -44,17 +44,17 @@
                     <p>Qty:</p>
                     <p class="cardCount">0</p>
                     <button class="buttonAdd">+</button>
-                    <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button>
+                    <!-- <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
         </div>
         <div class="card" id="widgetB">
             <div class="container">
-                <h4><b>Widget B</b></h4>
+                <h4><b class="widgetName" data-widgetname="Widget B">Widget B</b></h4>
                 <span>
                     <p>Weight:</p>
-                    <p data-type="weight">2</p>
+                    <p class="widgetWeight" data-widgetweight="2">2</p>
                     <p class="unit">lb</p>
                 </span>
                 <div>
@@ -62,17 +62,17 @@
                     <p>Qty:</p>
                     <p class="cardCount">0</p>
                     <button class="buttonAdd">+</button>
-                    <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button>
+                    <!-- <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
         </div>
         <div class="card" id="widgetC">
             <div class="container">
-                <h4><b>Widget C</b></h4>
+                <h4><b class="widgetName" data-widgetname="Widget C" name="widgetC">Widget C</b></h4>
                 <span>
                     <p>Weight:</p>
-                    <p data-type="weight">3</p>
+                    <p class="widgetWeight" data-widgetweight="3">3</p>
                     <p class="unit ">lb</p>
                 </span>
                 <div>
@@ -80,10 +80,14 @@
                     <p>Qty:</p>
                     <p class="cardCount">0</p>
                     <button class="buttonAdd">+</button>
-                    <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button>
+                    <!-- <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
+        </div>
+        <div>
+            <ul id="widgetList">
+            </ul>
         </div>
     </div>
 
@@ -95,14 +99,21 @@
     crossorigin=" anonymous "></script>
 <script>
     $(document).ready(function () {
+        // start with an empty array of widget cards
+        let widgetCardsArray = [];
+        // end start with an empty array of widget cards
+
+
         // assign elements to variables
         let widgetsToAdd = document.getElementById("countWidgetsToAdd ");
-        let widgetAddButton = document.getElementById("buttonAdd ");
+        let widgetAddButton = document.getElementsByClassName("buttonAdd ");
         let widgetClearButton = document.getElementById("buttonClearWidgets ");
         let widgetSubmitButton = document.getElementById("buttonSubmit ");
         let widgetSubtractButton = document.getElementById("buttonSubtract ");
         let totalWidgetsDisplay = document.getElementById("displayTotalWidgets ");
         let widgetCards = document.getElementsByClassName("card");
+        let widgetList = $("#widgetList");
+
         // end assign elements to variables
 
         // clear widget count
@@ -135,18 +146,46 @@
         updateTotalWidgetsDisplay(totalWidgets);
 
         // end update DOM with total widgets value
+        let displayWidgetList = function (widgetCardsArray) {
+            widgetList.empty();
+            widgetCardsArray.map(
+                function (item) {
+                    widgetList.prepend(
+                        `<li>
+                                <p>${item.name}, weight=${item.weight}<p>
+                            </span>
+                        </li>`
+                    )
+                }
+            );
+        }
 
-        let handleClickCard = function (event) {
+        let handleClickCard = function () {
             console.log("card clicked");
             console.log($(this));
             console.log(`${$(this).attr('id')}`);
         }
 
         let handleClickAdd = function () {
-            let count = $(widgetsToAdd).val();
-            count++;
-            $(widgetsToAdd).val(count);
-            $(widgetsToAdd).text(count);
+            console.log('init handleClickAdd');
+            let newWidget = $(this);
+            console.log(newWidget);
+            let widgetName = newWidget.closest('.card').find('.widgetName').attr('data-widgetname');
+            console.log(widgetName);
+            let widgetWeight = newWidget.closest('.card').find('.widgetWeight').attr('data-widgetweight');
+            console.log(widgetWeight);
+            let widgetToAdd = {
+                name: widgetName,
+                weight: widgetWeight,
+            }
+            widgetCardsArray.push(widgetToAdd);
+            console.log(widgetCardsArray);
+            displayWidgetList(widgetCardsArray);
+            // let count = $(widgetsToAdd).text();
+            // count++;
+            // console.log(count);
+            // $(widgetsToAdd).val(count);
+            // $(widgetsToAdd).text(count);
         }
 
         let handleClickClearWidgets = function () {
