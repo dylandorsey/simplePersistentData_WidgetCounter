@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 </head>
 <header>
     <h1>Static HTML site with Persistant Data</h1>
@@ -29,30 +29,90 @@
         <p id="displayTotalWidgets">0</p>
         <button id="buttonClearWidgets">Clear widgets</button>
     </div>
+    <div>
+        <h2>Add widgets by card</h2>`
+        <div class="card" id="widgetA">
+            <div class="container">
+                <h4><b>Widget A</b></h4>
+                <span>
+                    <p>Weight:</p>
+                    <p data-type="weight ">1</p>
+                    <p class="unit ">lb</p>
+                </span>
+                <div>
+                    <h4>Add widget to list</h4>
+                    <p>Qty:</p>
+                    <p class="cardCount">0</p>
+                    <button class="buttonAdd">+</button>
+                    <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="card" id="widgetB">
+            <div class="container">
+                <h4><b>Widget B</b></h4>
+                <span>
+                    <p>Weight:</p>
+                    <p data-type="weight">2</p>
+                    <p class="unit">lb</p>
+                </span>
+                <div>
+                    <h4>Add widget to list</h4>
+                    <p>Qty:</p>
+                    <p class="cardCount">0</p>
+                    <button class="buttonAdd">+</button>
+                    <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="card" id="widgetC">
+            <div class="container">
+                <h4><b>Widget C</b></h4>
+                <span>
+                    <p>Weight:</p>
+                    <p data-type="weight">3</p>
+                    <p class="unit ">lb</p>
+                </span>
+                <div>
+                    <h4>Add widget to list</h4>
+                    <p>Qty:</p>
+                    <p class="cardCount">0</p>
+                    <button class="buttonAdd">+</button>
+                    <button class="buttonSubtract">-</button>
+                    <button class="buttonSubmit">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
 </body>
 
 
-<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-3.3.1.min.js " integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin=" anonymous "></script>
 <script>
     $(document).ready(function () {
         // assign elements to variables
-        let widgetsToAdd = document.getElementById("countWidgetsToAdd");
-        let widgetAddButton = document.getElementById("buttonAdd");
-        let widgetClearButton = document.getElementById("buttonClearWidgets");
-        let widgetSubmitButton = document.getElementById("buttonSubmit");
-        let widgetSubtractButton = document.getElementById("buttonSubtract");
-        let totalWidgetsDisplay = document.getElementById("displayTotalWidgets");
+        let widgetsToAdd = document.getElementById("countWidgetsToAdd ");
+        let widgetAddButton = document.getElementById("buttonAdd ");
+        let widgetClearButton = document.getElementById("buttonClearWidgets ");
+        let widgetSubmitButton = document.getElementById("buttonSubmit ");
+        let widgetSubtractButton = document.getElementById("buttonSubtract ");
+        let totalWidgetsDisplay = document.getElementById("displayTotalWidgets ");
+        let widgetCards = document.getElementsByClassName("card");
         // end assign elements to variables
 
         // clear widget count
         let resetLocalStorage = function () {
-            localStorage.setItem("totalWidgets", Number(0));
+            localStorage.setItem("totalWidgets ", Number(0));
         } // end clear widget count
 
         // return local storage value for total widgets
         let getLocalStorage = function () {
-            let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets");
+            let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets ");
             console.log(`totalWidgetsFromLocalStorage = ${totalWidgetsFromLocalStorage}`);
             if (totalWidgetsFromLocalStorage) {
                 console.log(`total widgets from storage: ${totalWidgetsFromLocalStorage}`)
@@ -76,13 +136,19 @@
 
         // end update DOM with total widgets value
 
+        let handleClickCard = function (event) {
+            console.log("card clicked");
+            console.log($(this));
+            console.log(`${$(this).attr('id')}`);
+        }
+
         let handleClickAdd = function () {
             let count = $(widgetsToAdd).val();
             count++;
             $(widgetsToAdd).val(count);
             $(widgetsToAdd).text(count);
         }
-        
+
         let handleClickClearWidgets = function () {
             console.log('init handle click clear widgets');
             resetLocalStorage();
@@ -99,7 +165,7 @@
             console.log(`widgetsToAdd: ${widgetsToAdd}`);
             // Set total widgets to localStorage
             totalWidgets = Number(Number(totalWidgets) + Number(widgetsToAdd));
-            localStorage.setItem("totalWidgets", totalWidgets);
+            localStorage.setItem("totalWidgets ", totalWidgets);
             updateTotalWidgetsDisplay(totalWidgets);
 
         }
@@ -111,11 +177,11 @@
             $(widgetsToAdd).text(count);
         }
 
-
-        $(widgetAddButton).on("click", handleClickAdd);
-        $(widgetClearButton).on("click", function() {handleClickClearWidgets()});
-        $(widgetSubtractButton).on("click", handleClickSubtract);
-        $(widgetSubmitButton).on("click", function () { handleClickSubmit($(widgetsToAdd).val()) });
+        $(widgetAddButton).on("click ", handleClickAdd);
+        $(widgetClearButton).on("click ", function () { handleClickClearWidgets() });
+        $(widgetSubtractButton).on("click ", handleClickSubtract);
+        $(widgetSubmitButton).on("click ", function () { handleClickSubmit($(widgetsToAdd).val()) });
+        $(widgetCards).on("click", handleClickCard);
     })
 </script>
 
