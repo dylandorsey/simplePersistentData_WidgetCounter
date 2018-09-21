@@ -30,7 +30,7 @@
     <button id="buttonClearWidgets">Clear widgets</button>
     </div>
     <div>
-        <h2>Add widgets by card</h2>`
+        <h2>Add widgets by card</h2>
         <div class="card" id="widgetA">
             <div class="container">
                 <h4><b class="widgetName" data-widgetname="Widget A">Widget A</b></h4>
@@ -41,8 +41,8 @@
                 </span>
                 <div>
                     <h4>Add widget to list</h4>
-                    <p>Qty:</p>
-                    <p class="cardCount">0</p>
+                    <!-- <p>Qty:</p>
+                    <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <!-- <button class="buttonSubtract">-</button>
                     <button class="buttonSubmit">Add</button> -->
@@ -59,8 +59,8 @@
                 </span>
                 <div>
                     <h4>Add widget to list</h4>
-                    <p>Qty:</p>
-                    <p class="cardCount">0</p>
+                    <!-- <p>Qty:</p>
+                    <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <!-- <button class="buttonSubtract">-</button>
                     <button class="buttonSubmit">Add</button> -->
@@ -77,8 +77,8 @@
                 </span>
                 <div>
                     <h4>Add widget to list</h4>
-                    <p>Qty:</p>
-                    <p class="cardCount">0</p>
+                    <!-- <p>Qty:</p>
+                    <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <!-- <button class="buttonSubtract">-</button>
                     <button class="buttonSubmit">Add</button> -->
@@ -99,11 +99,6 @@
     crossorigin=" anonymous "></script>
 <script>
     $(document).ready(function () {
-        // start with an empty array of widget cards
-        let widgetCardsArray = [];
-        // end start with an empty array of widget cards
-
-
         // assign elements to variables
         let widgetsToAdd = $("#countWidgetsToAdd ");
         let widgetAddButton = $(".buttonAdd");
@@ -113,39 +108,42 @@
         let totalWidgetsDisplay = $("#displayTotalWidgets");
         let widgetCards = $(".card");
         let widgetList = $("#widgetList");
-
         // end assign elements to variables
 
-        // clear widget count
+        let widgetCardsArray = [];
+
+        // clear widget array
         let resetLocalStorage = function () {
-            localStorage.setItem("totalWidgets", Number(0));
-        } // end clear widget count
+            localStorage.setItem("widgetCardsArray", JSON.stringify([]));
+        } // end clear widget array
 
         // return local storage value for total widgets
-        let getLocalStorage = function () {
-            let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets");
-            console.log(`totalWidgetsFromLocalStorage = ${totalWidgetsFromLocalStorage}`);
-            if (totalWidgetsFromLocalStorage) {
-                console.log(`total widgets from storage: ${totalWidgetsFromLocalStorage}`)
-                return totalWidgetsFromLocalStorage;
+        let getWidgetCardsArrayFromLocalStorage = function () {
+            let widgetCardsArray = JSON.parse(localStorage.getItem("widgetCardsArray"));
+            console.log(`widgetCardsArrayFromLocalStorage = ${widgetCardsArray}`);
+            if (widgetCardsArray) {
+                console.log('widgetCardsArray found on local storage. Returning the array.')
+                console.log(JSON.stringify(widgetCardsArray));
+                return widgetCardsArray;
             } else {
-                console.log(`total widgets not yet stored in localStorage. Returning 0.`)
-                return 0;
+                console.log(`widgetCardsArray not found in localStorage. Returning empty array.`)
+                return [];
             }
         }// end return local storage value for total widgets
 
-        // assign value of total widgets to a variable
-        let totalWidgets = getLocalStorage();
-        // end assign value of total widgets to a variable
+        let calculateTotalWidgets = function (widgetCardsArray) {
+            // loop through array of widgets and sum the count of each type
+            let totalWidgets = 0;
+            for (let i = 0; i < widgetCardsArray.length; i++) {
+                totalWidgets = totalWidgets + widgetCardsArray[i].count;
+            }
+            return totalWidgets;
+        }
 
-        // update DOM with total widgets value
-        let updateTotalWidgetsDisplay = function (totalWidgets) {
-            $(totalWidgetsDisplay).text(totalWidgets);
-        } // end update DOM with total widgets value
+        // assign widget cards array to a variable
+        widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
+        // end assign widget cards array to a variable
 
-        updateTotalWidgetsDisplay(totalWidgets);
-
-        // end update DOM with total widgets value
         let displayWidgetList = function (widgetCardsArray) {
             console.log('init displayWidgetList');
             widgetList.empty();
@@ -160,6 +158,21 @@
                 );
             });
         }
+
+        let updateTotalWidgetsDisplay = function (totalWidgets) {
+            $(totalWidgetsDisplay).text(totalWidgets);
+        }
+
+        // assign value of total widgets to a variable
+        let totalWidgets = calculateTotalWidgets(widgetCardsArray);
+        // end assign value of total widgets to a variable
+
+        // update DOM with total widgets value and widget list
+        updateTotalWidgetsDisplay(totalWidgets);
+        displayWidgetList(widgetCardsArray);
+        // end update DOM with total widgets value and widget list
+
+
 
         let handleClickCard = function () {
             console.log("card clicked");
@@ -198,50 +211,55 @@
 
             // update DOM with updated widget array
             displayWidgetList(widgetCardsArray);
+            let totalWidgets = calculateTotalWidgets(widgetCardsArray);
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            updateTotalWidgetsDisplay(totalWidgets);
         }
 
         let searchArray = function (index, maxIndex, widgetToAdd) {
             console.log(`init searchArray at index ${index}`);
             let checkName = widgetToAdd.name;
             // case: widget at current index is similar to the added widget
-                if (checkName === widgetCardsArray[index].name) {
-                    console.log('Found similar widget, increasing count.')
-                    console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
-                    // create an updated widget with an increased count
-                    updatedWidget = {
-                        ...widgetCardsArray[index],
-                        count: widgetCardsArray[index].count + 1,
-                    }
-                    console.log(`count increased to ${updatedWidget.count}`)
-                    // remove the similar widget and replace it with the updated widget
-                    widgetCardsArray.splice([index], 1, updatedWidget);
-                    // advance index to next position
-                    index++;
-                } // end case: widget at current index is similar to the added widget 
-                // case: widget at current index is not similar to the added widget && there are more indecies to check
-                else if ( checkName != widgetCardsArray[index].name && index < maxIndex) {
-                    console.log('Checking next index.')
-                    // advance index to next position
-                    index++;
-                    // compare widget at the advanced position to the added widget
-                    searchArray(index, maxIndex, widgetToAdd);
-                } // end case: widget at current index is not similar to the added widget & there are more indecies to check
-                // case: widget at current index is not similar to the added widget && there are no more indecies to check
-                else if (checkName !=widgetCardsArray[index].name && index === maxIndex) {
-                    console.log('Found no match. Pushing widget to array.')
-                    // push the added widget to the widget array
-                    widgetCardsArray.push(widgetToAdd);
-                    // advance the index
-                    index ++;
-                } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
+            if (checkName === widgetCardsArray[index].name) {
+                console.log('Found similar widget, increasing count.')
+                console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
+                // create an updated widget with an increased count
+                updatedWidget = {
+                    ...widgetCardsArray[index],
+                    count: widgetCardsArray[index].count + 1,
+                }
+                console.log(`count increased to ${updatedWidget.count}`)
+                // remove the similar widget and replace it with the updated widget
+                widgetCardsArray.splice([index], 1, updatedWidget);
+                // advance index to next position
+                index++;
+            } // end case: widget at current index is similar to the added widget 
+            // case: widget at current index is not similar to the added widget && there are more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index < maxIndex) {
+                console.log('Checking next index.')
+                // advance index to next position
+                index++;
+                // compare widget at the advanced position to the added widget
+                searchArray(index, maxIndex, widgetToAdd);
+            } // end case: widget at current index is not similar to the added widget & there are more indecies to check
+            // case: widget at current index is not similar to the added widget && there are no more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index === maxIndex) {
+                console.log('Found no match. Pushing widget to array.')
+                // push the added widget to the widget array
+                widgetCardsArray.push(widgetToAdd);
+                // advance the index
+                index++;
+            } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
             return widgetCardsArray;
         }
 
         let handleClickClearWidgets = function () {
             console.log('init handle click clear widgets');
             resetLocalStorage();
-            totalWidgets = getLocalStorage();
             updateTotalWidgetsDisplay(totalWidgets);
+            widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
+            displayWidgetList(widgetCardsArray);
         }
 
         let handleClickSubmit = function (widgetsToAdd) {
@@ -264,6 +282,8 @@
             $(widgetsToAdd).val(count);
             $(widgetsToAdd).text(count);
         }
+
+
 
         $(widgetAddButton).on("click ", handleClickAdd);
         $(widgetClearButton).on("click ", function () { handleClickClearWidgets() });
