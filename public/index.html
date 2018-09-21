@@ -105,25 +105,25 @@
 
 
         // assign elements to variables
-        let widgetsToAdd = document.getElementById("countWidgetsToAdd ");
-        let widgetAddButton = document.getElementsByClassName("buttonAdd ");
-        let widgetClearButton = document.getElementById("buttonClearWidgets ");
-        let widgetSubmitButton = document.getElementById("buttonSubmit ");
-        let widgetSubtractButton = document.getElementById("buttonSubtract ");
-        let totalWidgetsDisplay = document.getElementById("displayTotalWidgets ");
-        let widgetCards = document.getElementsByClassName("card");
+        let widgetsToAdd = $("#countWidgetsToAdd ");
+        let widgetAddButton = $(".buttonAdd");
+        let widgetClearButton = $("#buttonClearWidgets");
+        let widgetSubmitButton = $("#buttonSubmit");
+        let widgetSubtractButton = $("#buttonSubtract");
+        let totalWidgetsDisplay = $("#displayTotalWidgets");
+        let widgetCards = $(".card");
         let widgetList = $("#widgetList");
 
         // end assign elements to variables
 
         // clear widget count
         let resetLocalStorage = function () {
-            localStorage.setItem("totalWidgets ", Number(0));
+            localStorage.setItem("totalWidgets", Number(0));
         } // end clear widget count
 
         // return local storage value for total widgets
         let getLocalStorage = function () {
-            let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets ");
+            let totalWidgetsFromLocalStorage = localStorage.getItem("totalWidgets");
             console.log(`totalWidgetsFromLocalStorage = ${totalWidgetsFromLocalStorage}`);
             if (totalWidgetsFromLocalStorage) {
                 console.log(`total widgets from storage: ${totalWidgetsFromLocalStorage}`)
@@ -147,45 +147,94 @@
 
         // end update DOM with total widgets value
         let displayWidgetList = function (widgetCardsArray) {
+            console.log('init displayWidgetList');
             widgetList.empty();
-            widgetCardsArray.map(
-                function (item) {
-                    widgetList.prepend(
-                        `<li>
-                                <p>${item.name}, weight=${item.weight}<p>
+            console.log('widgetCardsArray = ')
+            console.log(widgetCardsArray);
+            widgetCardsArray.map(item => {
+                widgetList.prepend(
+                    `<li>
+                                <p>${item.name}, weight=${item.weight}, count =${item.count}<p>
                             </span>
                         </li>`
-                    )
-                }
-            );
+                );
+            });
         }
 
         let handleClickCard = function () {
             console.log("card clicked");
-            console.log($(this));
-            console.log(`${$(this).attr('id')}`);
         }
 
         let handleClickAdd = function () {
             console.log('init handleClickAdd');
-            let newWidget = $(this);
-            console.log(newWidget);
-            let widgetName = newWidget.closest('.card').find('.widgetName').attr('data-widgetname');
+            let click = $(this);
+            console.log('This is the widget to add:');
+            let widgetName = click.closest('.card').find('.widgetName').attr('data-widgetname');
             console.log(widgetName);
-            let widgetWeight = newWidget.closest('.card').find('.widgetWeight').attr('data-widgetweight');
+            let widgetWeight = click.closest('.card').find('.widgetWeight').attr('data-widgetweight');
             console.log(widgetWeight);
             let widgetToAdd = {
                 name: widgetName,
                 weight: widgetWeight,
+                count: 1,
             }
-            widgetCardsArray.push(widgetToAdd);
-            console.log(widgetCardsArray);
+            console.log(`widget to add = ${JSON.stringify(widgetToAdd)}`);
+            console.log('checking existing widgets in array.')
+            // check for similar widget in widget array
+            // case: no widgets exist in array
+            // push widget to widget array
+            if (widgetCardsArray.length === 0) {
+                console.log('no similar widgets found. adding widget to array.')
+                widgetCardsArray.push(widgetToAdd);
+                console.log(widgetCardsArray);
+            } // end case: no widgets exist in array
+            // case: widget array has widgets
+            // check for similar widgets and update count
+            else if (widgetCardsArray.length > 0) {
+                let index = 0;
+                let maxIndex = widgetCardsArray.length - 1;
+                widgetCardsArray = searchArray(index, maxIndex, widgetToAdd);
+            } // end check for similar widgets and update count
+
+            // update DOM with updated widget array
             displayWidgetList(widgetCardsArray);
-            // let count = $(widgetsToAdd).text();
-            // count++;
-            // console.log(count);
-            // $(widgetsToAdd).val(count);
-            // $(widgetsToAdd).text(count);
+        }
+
+        let searchArray = function (index, maxIndex, widgetToAdd) {
+            console.log(`init searchArray at index ${index}`);
+            let checkName = widgetToAdd.name;
+            // case: widget at current index is similar to the added widget
+                if (checkName === widgetCardsArray[index].name) {
+                    console.log('Found similar widget, increasing count.')
+                    console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
+                    // create an updated widget with an increased count
+                    updatedWidget = {
+                        ...widgetCardsArray[index],
+                        count: widgetCardsArray[index].count + 1,
+                    }
+                    console.log(`count increased to ${updatedWidget.count}`)
+                    // remove the similar widget and replace it with the updated widget
+                    widgetCardsArray.splice([index], 1, updatedWidget);
+                    // advance index to next position
+                    index++;
+                } // end case: widget at current index is similar to the added widget 
+                // case: widget at current index is not similar to the added widget && there are more indecies to check
+                else if ( checkName != widgetCardsArray[index].name && index < maxIndex) {
+                    console.log('Checking next index.')
+                    // advance index to next position
+                    index++;
+                    // compare widget at the advanced position to the added widget
+                    searchArray(index, maxIndex, widgetToAdd);
+                } // end case: widget at current index is not similar to the added widget & there are more indecies to check
+                // case: widget at current index is not similar to the added widget && there are no more indecies to check
+                else if (checkName !=widgetCardsArray[index].name && index === maxIndex) {
+                    console.log('Found no match. Pushing widget to array.')
+                    // push the added widget to the widget array
+                    widgetCardsArray.push(widgetToAdd);
+                    // advance the index
+                    index ++;
+                } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
+            return widgetCardsArray;
         }
 
         let handleClickClearWidgets = function () {
@@ -221,7 +270,7 @@
         $(widgetSubtractButton).on("click ", handleClickSubtract);
         $(widgetSubmitButton).on("click ", function () { handleClickSubmit($(widgetsToAdd).val()) });
         $(widgetCards).on("click", handleClickCard);
-    })
+    });
 </script>
 
 </html>
