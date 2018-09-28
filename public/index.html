@@ -265,6 +265,21 @@
 
         let handleClickDelete = function () {
             console.log('init handleClickDelete');
+            let click = $(this);
+            console.log('This is the widget to delete:');
+            let widgetName = click.closest('.card').find('.widgetName').attr('data-widgetname');
+            console.log(widgetName);
+            let index = 0;
+            let maxIndex = widgetCardsArray.length - 1;
+            widgetCardsArray - searchArrayAndDelete(index, maxIndex, widgetName);
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
+
         }
 
         let handleClickSubtract = function () {
@@ -289,7 +304,7 @@
         let searchArrayAndDecrement = function (index, maxIndex, widgetName) {
             console.log('init searchArrayAndDecrement');
             let checkName = widgetName;
-            // case: widget at current index is similar to the added widget
+            // case: widget at current index is similar to the widget to decremenet
             if (checkName === widgetCardsArray[index].name) {
                 console.log('Found similar widget, decrementing count.')
                 console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
@@ -315,21 +330,49 @@
                 }// end case: the updated count is 2 or greater
                 // advance index to next position
                 index++;
-            } // end case: widget at current index is similar to the added widget 
-            // case: widget at current index is not similar to the added widget && there are more indecies to check
+            } // end case: widget at current index is similar to the widget to decremenet
+            // case: widget at current index is not similar to the widget to decrement && there are more indecies to check
             else if (checkName != widgetCardsArray[index].name && index < maxIndex) {
                 console.log('Checking next index.')
                 // advance index to next position
                 index++;
-                // compare widget at the advanced position to the added widget
+                // compare widget at the advanced position to the widget to decremenet
                 searchArrayAndDecrement(index, maxIndex, widgetName);
-            } // end case: widget at current index is not similar to the added widget & there are more indecies to check
-            // case: widget at current index is not similar to the added widget && there are no more indecies to check
+            } // end case: widget at current index is not similar to the widget to decremenet & there are more indecies to check
+            // case: widget at current index is not similar to the widget to decremenet && there are no more indecies to check
             else if (checkName != widgetCardsArray[index].name && index === maxIndex) {
                 console.log('Found no matching widget type to decrement.')
                 // advance the index
                 index++;
-            } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
+            } // end case: widget at current index is not similar to the widget to decremenet && there are no more indecies to check
+            return widgetCardsArray;
+        }
+
+        let searchArrayAndDelete = function (index, maxIndex, widgetName) {
+            console.log('init searchArrayAndDelete');
+            let checkName = widgetName;
+            // case: widget at current index is similar to the widget to delete
+            if (checkName === widgetCardsArray[index].name) {
+                console.log('Found similar widget, deleting.')
+                console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
+                widgetCardsArray.splice([index], 1);
+                // advance index to next position
+                index++;
+            } // end case: widget at current index is similar to the widget to delete
+            // case: widget at current index is not similar to the widget to delete && there are more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index < maxIndex) {
+                console.log('Checking next index.')
+                // advance index to next position
+                index++;
+                // compare widget at the advanced position to the widget to delete
+                searchArrayAndDelete(index, maxIndex, widgetName);
+            } // end case: widget at current index is not similar to the widget to delete & there are more indecies to check
+            // case: widget at current index is not similar to the widget to delete && there are no more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index === maxIndex) {
+                console.log('Found no matching widget type to delete.')
+                // advance the index
+                index++;
+            } // end case: widget at current index is not similar to the widget to delete && there are no more indecies to check
             return widgetCardsArray;
         }
 
