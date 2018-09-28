@@ -52,6 +52,7 @@
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <button class="buttonSubtract">-</button>
+                    <button class="buttonDeleteWidgets">delete</button>
                     <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
@@ -75,6 +76,7 @@
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <button class="buttonSubtract">-</button>
+                    <button class="buttonDeleteWidgets">delete</button>
                     <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
@@ -98,6 +100,7 @@
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
                     <button class="buttonSubtract">-</button>
+                    <button class="buttonDeleteWidgets">delete</button>
                     <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
@@ -120,6 +123,7 @@
         let widgetsToAdd = $("#countWidgetsToAdd ");
         let widgetAddButton = $(".buttonAdd");
         let widgetClearButton = $("#buttonClearWidgets");
+        let widgetDeleteButton = $(".buttonDeleteWidgets");
         let widgetSubmitButton = $("#buttonSubmit");
         let widgetSubtractButton = $(".buttonSubtract");
         let totalPriceDisplay = $("#totalPriceDisplay");
@@ -212,12 +216,6 @@
         displayWidgetList(widgetCardsArray);
         // end update DOM with total widgets value and widget list
 
-
-
-        let handleClickCard = function () {
-            console.log("card clicked");
-        }
-
         let handleClickAdd = function () {
             console.log('init handleClickAdd');
             let click = $(this);
@@ -259,6 +257,14 @@
             // update DOM with updated widget array
             displayTotalOrder(totalOrder);
             displayWidgetList(widgetCardsArray);
+        }
+
+        let handleClickCard = function () {
+            console.log("card clicked");
+        }
+
+        let handleClickDelete = function () {
+            console.log('init handleClickDelete');
         }
 
         let handleClickSubtract = function () {
@@ -378,6 +384,7 @@
 
         $(widgetAddButton).on("click ", handleClickAdd);
         $(widgetClearButton).on("click ", function () { handleClickClearWidgets() });
+        $(widgetDeleteButton).on("click ", handleClickDelete);
         $(widgetSubtractButton).on("click ", handleClickSubtract);
         $(widgetSubmitButton).on("click ", function () { handleClickSubmit($(widgetsToAdd).val()) });
         $(widgetCards).on("click", handleClickCard);
