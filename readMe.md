@@ -5,7 +5,7 @@ This simple HTML file contains HTML elements and jQuery / JavaScript scripting t
 The widget count is persisted by leveraging client local storage.
 
 ##Future vision
-This is the beginning of a simple ordering system for a static HTML website.
+This is the beginning of a simple ordering system for a client that uses a static HTML website.
 
 Counts of various widgets will be updating based upon click events.
 
