@@ -26,7 +26,9 @@
     </div>
     <div> -->
     <h4>Total widgets:</h4>
-    <p id="displayTotalWidgets">0</p>
+    <p id="totalWidgetsDisplay">0</p>
+    <h4>Total price:</h4>
+    <p id="totalPriceDisplay">0</p>
     <button id="buttonClearWidgets">Clear widgets</button>
     </div>
     <div>
@@ -38,6 +40,11 @@
                     <p>Weight:</p>
                     <p class="widgetWeight" data-widgetweight="1">1</p>
                     <p class="unit ">lb</p>
+                </span>
+                <br>
+                <span>
+                    <p>Price:</p>
+                    <p class="widgetPrice" data-widgetprice="5.00">$5.00</p>
                 </span>
                 <div>
                     <h4>Add widget to list</h4>
@@ -57,6 +64,11 @@
                     <p class="widgetWeight" data-widgetweight="2">2</p>
                     <p class="unit">lb</p>
                 </span>
+                <br>
+                <span>
+                    <p>Price:</p>
+                    <p class="widgetPrice" data-widgetprice="9.00">$9.00</p>
+                </span>
                 <div>
                     <h4>Add widget to list</h4>
                     <!-- <p>Qty:</p>
@@ -74,6 +86,11 @@
                     <p>Weight:</p>
                     <p class="widgetWeight" data-widgetweight="3">3</p>
                     <p class="unit ">lb</p>
+                </span>
+                <br>
+                <span>
+                    <p>Price:</p>
+                    <p class="widgetPrice" data-widgetprice="4.00">$4.00</p>
                 </span>
                 <div>
                     <h4>Add widget to list</h4>
@@ -105,7 +122,8 @@
         let widgetClearButton = $("#buttonClearWidgets");
         let widgetSubmitButton = $("#buttonSubmit");
         let widgetSubtractButton = $("#buttonSubtract");
-        let totalWidgetsDisplay = $("#displayTotalWidgets");
+        let totalPriceDisplay = $("#totalPriceDisplay");
+        let totalWidgetsDisplay = $("#totalWidgetsDisplay");
         let widgetCards = $(".card");
         let widgetList = $("#widgetList");
         // end assign elements to variables
@@ -131,18 +149,44 @@
             }
         }// end return local storage value for total widgets
 
-        let calculateTotalWidgets = function (widgetCardsArray) {
+        let calculateTotalOrder = function (widgetCardsArray) {
+            console.log('init calculateTotalOrder');
             // loop through array of widgets and sum the count of each type
-            let totalWidgets = 0;
-            for (let i = 0; i < widgetCardsArray.length; i++) {
-                totalWidgets = totalWidgets + widgetCardsArray[i].count;
+            let totalOrder = {
+                totalWidgets: 0,
+                totalPrice: 0,
             }
-            return totalWidgets;
+            for (let i = 0; i < widgetCardsArray.length; i++) {
+                totalOrder = {
+                    totalWidgets: totalOrder.totalWidgets + widgetCardsArray[i].count,
+                    totalPrice: Number(totalOrder.totalPrice) + Number(widgetCardsArray[i].subtotalPrice),
+                }
+            }
+            console.log(totalOrder);
+            return totalOrder;
         }
 
         // assign widget cards array to a variable
         widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
         // end assign widget cards array to a variable
+
+        let displayTotalOrder = function (totalOrder) {
+            console.log('init displayTotalOrder');
+            console.log(`total widgets: ${totalOrder.totalWidgets}`);
+            console.log(`total price: ${totalOrder.totalPrice}`);
+            totalWidgetsDisplay.text('clearing');
+            totalPriceDisplay.text('clearing');
+            totalWidgetsDisplay.text(
+                `
+                ${totalOrder.totalWidgets}
+                `
+            );
+            totalPriceDisplay.text(
+                `
+                ${totalOrder.totalPrice}
+                `
+            );
+        }
 
         let displayWidgetList = function (widgetCardsArray) {
             console.log('init displayWidgetList');
@@ -152,23 +196,19 @@
             widgetCardsArray.map(item => {
                 widgetList.prepend(
                     `<li>
-                                <p>${item.name}, weight=${item.weight}, count =${item.count}<p>
+                                <p>${item.name}, weight=${item.weight}, count=${item.count}, subtotalPrice=${item.subtotalPrice}<p>
                             </span>
                         </li>`
                 );
             });
         }
 
-        let updateTotalWidgetsDisplay = function (totalWidgets) {
-            $(totalWidgetsDisplay).text(totalWidgets);
-        }
-
         // assign value of total widgets to a variable
-        let totalWidgets = calculateTotalWidgets(widgetCardsArray);
+        let totalOrder = calculateTotalOrder(widgetCardsArray);
         // end assign value of total widgets to a variable
 
         // update DOM with total widgets value and widget list
-        updateTotalWidgetsDisplay(totalWidgets);
+        displayTotalOrder(totalOrder);
         displayWidgetList(widgetCardsArray);
         // end update DOM with total widgets value and widget list
 
@@ -186,10 +226,13 @@
             console.log(widgetName);
             let widgetWeight = click.closest('.card').find('.widgetWeight').attr('data-widgetweight');
             console.log(widgetWeight);
+            let widgetPrice = click.closest('.card').find('.widgetPrice').attr('data-widgetprice');
             let widgetToAdd = {
                 name: widgetName,
                 weight: widgetWeight,
                 count: 1,
+                widgetPrice: widgetPrice,
+                subtotalPrice: widgetPrice,
             }
             console.log(`widget to add = ${JSON.stringify(widgetToAdd)}`);
             console.log('checking existing widgets in array.')
@@ -209,12 +252,13 @@
                 widgetCardsArray = searchArray(index, maxIndex, widgetToAdd);
             } // end check for similar widgets and update count
 
-            // update DOM with updated widget array
-            displayWidgetList(widgetCardsArray);
-            let totalWidgets = calculateTotalWidgets(widgetCardsArray);
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
             // update local storage
             localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
-            updateTotalWidgetsDisplay(totalWidgets);
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
         }
 
         let searchArray = function (index, maxIndex, widgetToAdd) {
@@ -225,9 +269,12 @@
                 console.log('Found similar widget, increasing count.')
                 console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
                 // create an updated widget with an increased count
+                let count = widgetCardsArray[index].count + 1;
+                let subtotalPrice = widgetToAdd.widgetPrice * count;
                 updatedWidget = {
                     ...widgetCardsArray[index],
                     count: widgetCardsArray[index].count + 1,
+                    subtotalPrice: subtotalPrice,
                 }
                 console.log(`count increased to ${updatedWidget.count}`)
                 // remove the similar widget and replace it with the updated widget
@@ -257,33 +304,11 @@
         let handleClickClearWidgets = function () {
             console.log('init handle click clear widgets');
             resetLocalStorage();
-            updateTotalWidgetsDisplay(totalWidgets);
             widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+            displayTotalOrder(totalOrder);
             displayWidgetList(widgetCardsArray);
         }
-
-        let handleClickSubmit = function (widgetsToAdd) {
-            // assign value of total widgets to a variable
-            totalWidgets = getLocalStorage();
-            // end assign value of total widgets to a variable
-            console.log('init handleClickSubmit.');
-            console.log(`Total widgets: ${totalWidgets}`);
-            console.log(`widgetsToAdd: ${widgetsToAdd}`);
-            // Set total widgets to localStorage
-            totalWidgets = Number(Number(totalWidgets) + Number(widgetsToAdd));
-            localStorage.setItem("totalWidgets ", totalWidgets);
-            updateTotalWidgetsDisplay(totalWidgets);
-
-        }
-
-        let handleClickSubtract = function () {
-            let count = $(widgetsToAdd).val();
-            count--;
-            $(widgetsToAdd).val(count);
-            $(widgetsToAdd).text(count);
-        }
-
-
 
         $(widgetAddButton).on("click ", handleClickAdd);
         $(widgetClearButton).on("click ", function () { handleClickClearWidgets() });
