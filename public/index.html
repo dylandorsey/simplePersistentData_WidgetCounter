@@ -47,12 +47,12 @@
                     <p class="widgetPrice" data-widgetprice="5.00">$5.00</p>
                 </span>
                 <div>
-                    <h4>Add widget to list</h4>
+                    <h4>Add / Subtract</h4>
                     <!-- <p>Qty:</p>
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
-                    <!-- <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button> -->
+                    <button class="buttonSubtract">-</button>
+                    <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
         </div>
@@ -70,12 +70,12 @@
                     <p class="widgetPrice" data-widgetprice="9.00">$9.00</p>
                 </span>
                 <div>
-                    <h4>Add widget to list</h4>
+                    <h4>Add / Subtract</h4>
                     <!-- <p>Qty:</p>
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
-                    <!-- <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button> -->
+                    <button class="buttonSubtract">-</button>
+                    <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
         </div>
@@ -93,12 +93,12 @@
                     <p class="widgetPrice" data-widgetprice="4.00">$4.00</p>
                 </span>
                 <div>
-                    <h4>Add widget to list</h4>
+                    <h4>Add / Subtract</h4>
                     <!-- <p>Qty:</p>
                     <p class="cardCount">0</p> -->
                     <button class="buttonAdd">+</button>
-                    <!-- <button class="buttonSubtract">-</button>
-                    <button class="buttonSubmit">Add</button> -->
+                    <button class="buttonSubtract">-</button>
+                    <!-- <button class="buttonSubmit">Add</button> -->
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
         let widgetAddButton = $(".buttonAdd");
         let widgetClearButton = $("#buttonClearWidgets");
         let widgetSubmitButton = $("#buttonSubmit");
-        let widgetSubtractButton = $("#buttonSubtract");
+        let widgetSubtractButton = $(".buttonSubtract");
         let totalPriceDisplay = $("#totalPriceDisplay");
         let totalWidgetsDisplay = $("#totalWidgetsDisplay");
         let widgetCards = $(".card");
@@ -249,7 +249,7 @@
             else if (widgetCardsArray.length > 0) {
                 let index = 0;
                 let maxIndex = widgetCardsArray.length - 1;
-                widgetCardsArray = searchArray(index, maxIndex, widgetToAdd);
+                widgetCardsArray = searchArrayAndIncrement(index, maxIndex, widgetToAdd);
             } // end check for similar widgets and update count
 
             totalOrder = calculateTotalOrder(widgetCardsArray);
@@ -261,7 +261,73 @@
             displayWidgetList(widgetCardsArray);
         }
 
-        let searchArray = function (index, maxIndex, widgetToAdd) {
+        let handleClickSubtract = function () {
+            console.log('init handleClickSubtract');
+            let click = $(this);
+            console.log('This is the widget to subract:');
+            let widgetName = click.closest('.card').find('.widgetName').attr('data-widgetname');
+            console.log(widgetName);
+            let index = 0;
+            let maxIndex = widgetCardsArray.length - 1;
+            widgetCardsArray - searchArrayAndDecrement(index, maxIndex, widgetName);
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
+
+        }
+
+        let searchArrayAndDecrement = function (index, maxIndex, widgetName) {
+            console.log('init searchArrayAndDecrement');
+            let checkName = widgetName;
+            // case: widget at current index is similar to the added widget
+            if (checkName === widgetCardsArray[index].name) {
+                console.log('Found similar widget, decrementing count.')
+                console.log(`checkName = ${checkName} and matching name = ${widgetCardsArray[index].name}`);
+                // create an updated widget with an increased count
+                let count = widgetCardsArray[index].count;
+                // case: the updated count is less than or equal to 1
+                if (count <= 1) {
+                    // remove the widget from the widgetCardsArray
+                    widgetCardsArray.splice([index], 1);
+                } // end case: the updated count is less than or equal to 1
+                // case: the updated count is 2 or greater
+                else {
+                    let updatedCount = count - 1;
+                    let updatedSubtotalPrice = widgetCardsArray[index].widgetPrice * updatedCount;
+                    updatedWidget = {
+                        ...widgetCardsArray[index],
+                        count: updatedCount,
+                        subtotalPrice: updatedSubtotalPrice,
+                    }
+                    console.log(`count increased to ${updatedWidget.count}`)
+                    // remove the similar widget and replace it with the updated widget
+                    widgetCardsArray.splice([index], 1, updatedWidget);
+                }// end case: the updated count is 2 or greater
+                // advance index to next position
+                index++;
+            } // end case: widget at current index is similar to the added widget 
+            // case: widget at current index is not similar to the added widget && there are more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index < maxIndex) {
+                console.log('Checking next index.')
+                // advance index to next position
+                index++;
+                // compare widget at the advanced position to the added widget
+                searchArrayAndDecrement(index, maxIndex, widgetName);
+            } // end case: widget at current index is not similar to the added widget & there are more indecies to check
+            // case: widget at current index is not similar to the added widget && there are no more indecies to check
+            else if (checkName != widgetCardsArray[index].name && index === maxIndex) {
+                console.log('Found no matching widget type to decrement.')
+                // advance the index
+                index++;
+            } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
+            return widgetCardsArray;
+        }
+
+        let searchArrayAndIncrement = function (index, maxIndex, widgetToAdd) {
             console.log(`init searchArray at index ${index}`);
             let checkName = widgetToAdd.name;
             // case: widget at current index is similar to the added widget
@@ -288,7 +354,7 @@
                 // advance index to next position
                 index++;
                 // compare widget at the advanced position to the added widget
-                searchArray(index, maxIndex, widgetToAdd);
+                searchArrayAndIncrement(index, maxIndex, widgetToAdd);
             } // end case: widget at current index is not similar to the added widget & there are more indecies to check
             // case: widget at current index is not similar to the added widget && there are no more indecies to check
             else if (checkName != widgetCardsArray[index].name && index === maxIndex) {
