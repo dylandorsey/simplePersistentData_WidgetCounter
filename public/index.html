@@ -319,10 +319,12 @@
                 else {
                     let updatedCount = count - 1;
                     let updatedSubtotalPrice = widgetCardsArray[index].widgetPrice * updatedCount;
+                    let updatedSubtotalWeight = widgetCardsArray[index].weight * updatedCount;
                     updatedWidget = {
                         ...widgetCardsArray[index],
                         count: updatedCount,
                         subtotalPrice: updatedSubtotalPrice,
+                        subtotalWeight: updatedSubtotalWeight,
                     }
                     console.log(`count increased to ${updatedWidget.count}`)
                     // remove the similar widget and replace it with the updated widget
