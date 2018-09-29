@@ -9,8 +9,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 </head>
 <header>
-    <h1>Static HTML site with Persistant Data</h1>
-    <h2>Uses client local storage to persist data.</h2>
+
 </header>
 
 <body>
@@ -25,15 +24,8 @@
         </div>
     </div>
     <div> -->
-    <h3>Order Summary</h3>
-    <h4>Total widgets:</h4>
-    <p id="totalWidgetsDisplay">0</p>
-    <h4>Total price:</h4>
-    <p id="totalPriceDisplay">0</p>
-    <button id="buttonClearWidgets">Clear widgets</button>
-    </div>
     <div>
-        <h2>Modify order</h2>
+        <h2>Shop for wigets</h2>
         <div class="card" id="widgetA">
             <div class="container">
                 <h4><b class="widgetName" data-widgetname="Widget A">Widget A</b></h4>
@@ -103,11 +95,19 @@
                 </div>
             </div>
         </div>
-        <div>
-            <h3>Order details</h3>
-            <ul id="widgetList">
-            </ul>
+        <div id="cart">
+            <h3>Your cart</h3>
+            <div id="widgetList">
+            </div>
+            <div id="cartTotals">
+                <p class="cartTotalLabel">Total widgets:</p>
+                <p id="totalWidgetsDisplay">0</p>
+                <p class="cartTotalLabel">Total price:</p>
+                <p id="totalPriceDisplay">0</p>
+                <button id="buttonClearWidgets">Empty cart</button>
+            </div>
         </div>
+    </div>
     </div>
 
     </div>
@@ -169,6 +169,10 @@
             return totalOrder;
         }
 
+        let handleClickCartButtonAdd = function () {
+            alert('cartButtonAdd clicked');
+        }
+
         // assign widget cards array to a variable
         widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
         // end assign widget cards array to a variable
@@ -196,14 +200,44 @@
             widgetList.empty();
             console.log('widgetCardsArray = ')
             console.log(widgetCardsArray);
-            widgetCardsArray.map(item => {
-                widgetList.prepend(
-                    `<li>
-                                <p>${item.name}, subtotalWeight=${item.subtotalWeight}, count=${item.count}, subtotalPrice=${item.subtotalPrice}<p>
-                            </span>
-                        </li>`
+            if (widgetCardsArray.length === 0) {
+                widgetList.append(
+                    `<p>Your cart is empty</p>`
                 );
-            });
+                widgetClearButton.addClass('hide');
+            }
+            else {
+                widgetClearButton.removeClass('hide');
+                widgetList.prepend(
+                    `
+                    <p id="cartItemNameLabel">Item</p>
+                    <p id="cartItemSubtotalWeightLabel">Weight</p>
+                    <p id="cartItemCountLabel">Quantity</p>
+                    <p id="cartItemSubtotalPriceLabel">Price</p>
+                    <p id="cartItemActionsLabel">Actions</p>
+                    `
+                )
+                widgetCardsArray.map(item => {
+                    widgetList.append(
+                        `<div class="cartItem">
+                            <p class="cartItemName">${item.name}</p>
+                            <p class="cartItemSubtotalWeight">${item.subtotalWeight} lb</p>
+                            <p class="cartItemCount">${item.count}</p>
+                            <p class="cartItemSubtotalPrice">${item.subtotalPrice}</p>
+                            <div class="cartItemsActions">
+                            <button class="cartButtonAdd">+</button>
+                            <button class="cartButtonSubtract">-</button>
+                            <button class="cartButtonDelete">delete</button>
+                            </div>
+                        </div>
+                        `
+                    );
+                });
+                let cartButtonAdd = $(`.cartButtonAdd`);
+                cartButtonAdd.on('click', handleClickCartButtonAdd);
+            }
+
+
         }
 
         // assign value of total widgets to a variable
@@ -214,6 +248,8 @@
         displayTotalOrder(totalOrder);
         displayWidgetList(widgetCardsArray);
         // end update DOM with total widgets value and widget list
+
+
 
         let handleClickAdd = function () {
             console.log('init handleClickAdd');
@@ -400,7 +436,7 @@
                 widgetCardsArray.splice([index], 1, updatedWidget);
                 // advance index to next position
                 index++;
-            } // end case: widget at current index is similar to the added widget 
+            } // end case: widget at current index is similar to the added widget
             // case: widget at current index is not similar to the added widget && there are more indecies to check
             else if (checkName != widgetCardsArray[index].name && index < maxIndex) {
                 console.log('Checking next index.')
