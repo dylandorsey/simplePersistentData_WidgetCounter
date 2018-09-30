@@ -99,13 +99,18 @@
     grid-row: 1;
     grid-column: 1;
 }
+
+.cartButtonAdd:hover {
+    transform: scale(1.02);
+}
+
 .cartButtonSubtract {
     grid-row: 2;
     grid-column: 1;
 }
 
-.cartButtonSubtract:hover{
-    cursor: not-allowed;
+.cartButtonSubtract:hover {
+    transform: scale(1.02);
 }
 
 .cartButtonDelete {
@@ -114,7 +119,7 @@
 }
 
 .cartButtonDelete:hover{
-    cursor: not-allowed;
+    transform: scale(1.02);
 }
 
 #buttonClearWidgets {
