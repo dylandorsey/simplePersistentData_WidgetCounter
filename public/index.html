@@ -170,7 +170,29 @@
         }
 
         let handleClickCartButtonAdd = function () {
-            alert('cartButtonAdd clicked');
+            let click = $(this);
+            let cartItem = click.parents(".cartItem").data('item');
+            console.log(cartItem);
+            if (widgetCardsArray.length === 0) {
+                console.log('no similar widgets found. adding widget to array.')
+                widgetCardsArray.push(cartItem);
+                console.log(widgetCardsArray);
+            } // end case: no widgets exist in array
+            // case: widget array has widgets
+            // check for similar widgets and update count
+            else if (widgetCardsArray.length > 0) {
+                let index = 0;
+                let maxIndex = widgetCardsArray.length - 1;
+                widgetCardsArray = searchArrayAndIncrement(index, maxIndex, cartItem);
+            } // end check for similar widgets and update count
+
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
         }
 
         // assign widget cards array to a variable
@@ -217,27 +239,30 @@
                     <p id="cartItemActionsLabel">Actions</p>
                     `
                 )
-                widgetCardsArray.map(item => {
+                widgetCardsArray.map((item, index) => {
                     widgetList.append(
-                        `<div class="cartItem">
+                            `<div 
+                            class="cartItem"
+                            id="cartItem${index}"
+                            >
                             <p class="cartItemName">${item.name}</p>
                             <p class="cartItemSubtotalWeight">${item.subtotalWeight} lb</p>
                             <p class="cartItemCount">${item.count}</p>
                             <p class="cartItemSubtotalPrice">${item.subtotalPrice}</p>
                             <div class="cartItemsActions">
-                            <button class="cartButtonAdd">+</button>
-                            <button class="cartButtonSubtract">-</button>
-                            <button class="cartButtonDelete">delete</button>
+                                <button class="cartButtonAdd">+</button>
+                                <button class="cartButtonSubtract">-</button>
+                                <button class="cartButtonDelete">delete</button>
                             </div>
                         </div>
                         `
                     );
+                    $(`#cartItem${index}`).data('item', item);
+
                 });
-                let cartButtonAdd = $(`.cartButtonAdd`);
+                let cartButtonAdd = $('.cartButtonAdd');
                 cartButtonAdd.on('click', handleClickCartButtonAdd);
             }
-
-
         }
 
         // assign value of total widgets to a variable
