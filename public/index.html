@@ -195,6 +195,25 @@
             displayWidgetList(widgetCardsArray);
         }
 
+        let handleClickCartButtonSubtract = function () {
+            console.log('init handleClickCartButtonSubtract');
+            let click = $(this);
+            console.log('This is the widget to subract:');
+            let cartItem = click.parents(".cartItem").data('item');
+            console.log(cartItem);
+            let index = 0;
+            let maxIndex = widgetCardsArray.length - 1;
+            widgetCardsArray - searchArrayAndDecrement(index, maxIndex, cartItem.name);
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
+
+        }
+
         // assign widget cards array to a variable
         widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
         // end assign widget cards array to a variable
@@ -261,7 +280,9 @@
 
                 });
                 let cartButtonAdd = $('.cartButtonAdd');
+                let cartButtonSubtract = $('.cartButtonSubtract');
                 cartButtonAdd.on('click', handleClickCartButtonAdd);
+                cartButtonSubtract.on('click', handleClickCartButtonSubtract);
             }
         }
 
