@@ -195,6 +195,24 @@
             displayWidgetList(widgetCardsArray);
         }
 
+        let handleClickCartButtonDelete = function () {
+            console.log('init handleClickCartButtonDelete');
+            let click = $(this);
+            console.log('This is the widget to delete:');
+            let cartItem = click.parents(".cartItem").data('item');
+            console.log(cartItem);
+            let index = 0;
+            let maxIndex = widgetCardsArray.length - 1;
+            widgetCardsArray - searchArrayAndDelete(index, maxIndex, cartItem.name);
+            totalOrder = calculateTotalOrder(widgetCardsArray);
+
+            // update local storage
+            localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
+            // update DOM with updated widget array
+            displayTotalOrder(totalOrder);
+            displayWidgetList(widgetCardsArray);
+        }
+
         let handleClickCartButtonSubtract = function () {
             console.log('init handleClickCartButtonSubtract');
             let click = $(this);
@@ -258,6 +276,7 @@
                     <p id="cartItemActionsLabel">Actions</p>
                     `
                 )
+                // loop through the array of widgets and create a cart item for each
                 widgetCardsArray.map((item, index) => {
                     widgetList.append(
                             `<div 
@@ -278,10 +297,16 @@
                     );
                     $(`#cartItem${index}`).data('item', item);
 
-                });
+                });// end loop through array of widgets and create a cart item for each
+
+                // assign variables to cart buttons
                 let cartButtonAdd = $('.cartButtonAdd');
+                let cartButtonDelete = $('.cartButtonDelete');
                 let cartButtonSubtract = $('.cartButtonSubtract');
+
+                // assign event listeners to cart buttons
                 cartButtonAdd.on('click', handleClickCartButtonAdd);
+                cartButtonDelete.on('click', handleClickCartButtonDelete);
                 cartButtonSubtract.on('click', handleClickCartButtonSubtract);
             }
         }
@@ -361,7 +386,6 @@
             // update DOM with updated widget array
             displayTotalOrder(totalOrder);
             displayWidgetList(widgetCardsArray);
-
         }
 
         let handleClickSubtract = function () {

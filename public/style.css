@@ -120,7 +120,6 @@
 
 .cartButtonDelete:hover{
     transform: scale(1.02);
-    cursor: not-allowed;
 }
 
 #buttonClearWidgets {
