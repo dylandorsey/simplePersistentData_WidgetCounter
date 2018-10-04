@@ -1,16 +1,16 @@
 $(document).ready(function () {
     console.log('init jq');
     // DELCARE VARIABLES
-    let widgetsToAdd =  $("#countWidgetsToAdd ");
-    let widgetAddButton =  $(".buttonAdd");
-    let widgetClearButton =  $("#buttonClearWidgets");
-    let widgetDeleteButton =  $(".buttonDeleteWidgets");
-    let widgetSubmitButton =  $("#buttonSubmit");
-    let widgetSubtractButton =  $(".buttonSubtract");
-    let totalPriceDisplay =  $("#totalPriceDisplay");
-    let totalWidgetsDisplay =  $("#totalWidgetsDisplay");
-    let widgetCards =  $(".card");
-    let widgetList =  $("#widgetList");
+    let totalPriceDisplay = $("#totalPriceDisplay");
+    let totalWidgetsDisplay = $("#totalWidgetsDisplay");
+    let widgetsToAdd = $("#countWidgetsToAdd ");
+    let widgetAddButton = $(".buttonAdd");
+    let widgetClearButton = $("#buttonClearWidgets");
+    let widgetDeleteButton = $(".buttonDeleteWidgets");
+    let widgetSubmitButton = $("#buttonSubmit");
+    let widgetSubtractButton = $(".buttonSubtract");
+    let widgetCards = $(".card");
+    let widgetList = $("#widgetList");
     // END DECLARE VARIABLES
 
     // DECLARE FUNCTIONS
@@ -30,7 +30,7 @@ $(document).ready(function () {
         console.log(totalOrder);
         return totalOrder;
     }
-    
+
     let displayTotalOrder = function (totalOrder) {
         console.log('init displayTotalOrder');
         console.log(`total widgets: ${totalOrder.totalWidgets}`);
@@ -48,7 +48,7 @@ $(document).ready(function () {
                 `
         );
     }
-    
+
     let displayWidgetList = function (widgetCardsArray) {
         console.log('init displayWidgetList');
         widgetList.empty();
@@ -91,21 +91,21 @@ $(document).ready(function () {
                         `
                 );
                 $(`#cartItem${index}`).data('item', item);
-    
+
             });// end loop through array of widgets and create a cart item for each
-    
+
             // assign variables to cart buttons
             let cartButtonAdd = $('.cartButtonAdd');
             let cartButtonDelete = $('.cartButtonDelete');
             let cartButtonSubtract = $('.cartButtonSubtract');
-    
+
             // assign event listeners to cart buttons
             cartButtonAdd.on('click', handleClickCartButtonAdd);
             cartButtonDelete.on('click', handleClickCartButtonDelete);
             cartButtonSubtract.on('click', handleClickCartButtonSubtract);
         }
     }
-    
+
     let getWidgetCardsArrayFromLocalStorage = function () {
         let widgetCardsArray = JSON.parse(localStorage.getItem("widgetCardsArray"));
         console.log(`widgetCardsArrayFromLocalStorage = ${widgetCardsArray}`);
@@ -118,7 +118,7 @@ $(document).ready(function () {
             return [];
         }
     }
-    
+
     let handleClickCartButtonAdd = function () {
         let click = $(this);
         let cartItem = click.parents(".cartItem").data('item');
@@ -135,18 +135,18 @@ $(document).ready(function () {
             let maxIndex = widgetCardsArray.length - 1;
             widgetCardsArray = searchArrayAndIncrement(index, maxIndex, cartItem);
         } // end check for similar widgets and update count
-    
+
         // update local storage with updated widgetCardsArray
         updateLocalStorage(widgetCardsArray);
-    
+
         // update DOM with updated widgetCardsArray
         displayWidgetList(widgetCardsArray);
-    
+
         // recalculate order totals and display on DOM
         totalOrder = calculateTotalOrder(widgetCardsArray);
         displayTotalOrder(totalOrder);
     }
-    
+
     let handleClickCartButtonDelete = function () {
         console.log('init handleClickCartButtonDelete');
         let click = $(this);
@@ -157,18 +157,18 @@ $(document).ready(function () {
         let maxIndex = widgetCardsArray.length - 1;
         widgetCardsArray - searchArrayAndDelete(index, maxIndex, cartItem.name);
         totalOrder = calculateTotalOrder(widgetCardsArray);
-    
+
         // update local storage with updated widgetCardsArray
         updateLocalStorage(widgetCardsArray);
-    
+
         // update DOM with updated widgetCardsArray
         displayWidgetList(widgetCardsArray);
-    
+
         // recalculate order totals and display on DOM
         totalOrder = calculateTotalOrder(widgetCardsArray);
         displayTotalOrder(totalOrder);
     }
-    
+
     let handleClickCartButtonSubtract = function () {
         console.log('init handleClickCartButtonSubtract');
         let click = $(this);
@@ -179,18 +179,18 @@ $(document).ready(function () {
         let maxIndex = widgetCardsArray.length - 1;
         widgetCardsArray - searchArrayAndDecrement(index, maxIndex, cartItem.name);
         totalOrder = calculateTotalOrder(widgetCardsArray);
-    
+
         // update local storage with updated widgetCardsArray
         updateLocalStorage(widgetCardsArray);
-    
+
         // update DOM with updated widgetCardsArray
         displayWidgetList(widgetCardsArray);
-    
+
         // recalculate order totals and display on DOM
         totalOrder = calculateTotalOrder(widgetCardsArray);
         displayTotalOrder(totalOrder);
     }
-    
+
     let handleClickAdd = function () {
         console.log('init handleClickAdd');
         let click = $(this);
@@ -225,18 +225,18 @@ $(document).ready(function () {
             let maxIndex = widgetCardsArray.length - 1;
             widgetCardsArray = searchArrayAndIncrement(index, maxIndex, widgetToAdd);
         } // end check for similar widgets and update count
-    
+
         // update local storage with updated widgetCardsArray
         updateLocalStorage(widgetCardsArray);
-    
+
         // update DOM with updated widgetCardsArray
         displayWidgetList(widgetCardsArray);
-    
+
         // recalculate order totals and display on DOM
         totalOrder = calculateTotalOrder(widgetCardsArray);
         displayTotalOrder(totalOrder);
     }
-    
+
     let handleClickClearWidgets = function () {
         console.log('init handle click clear widgets');
         resetLocalStorage();
@@ -245,7 +245,7 @@ $(document).ready(function () {
         displayTotalOrder(totalOrder);
         displayWidgetList(widgetCardsArray);
     }
-    
+
     let handleClickDelete = function () {
         console.log('init handleClickDelete');
         let click = $(this);
@@ -256,14 +256,14 @@ $(document).ready(function () {
         let maxIndex = widgetCardsArray.length - 1;
         widgetCardsArray - searchArrayAndDelete(index, maxIndex, widgetName);
         totalOrder = calculateTotalOrder(widgetCardsArray);
-    
+
         // update local storage
         localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
         // update DOM with updated widget array
         displayTotalOrder(totalOrder);
         displayWidgetList(widgetCardsArray);
     }
-    
+
     let handleClickSubtract = function () {
         console.log('init handleClickSubtract');
         let click = $(this);
@@ -274,15 +274,15 @@ $(document).ready(function () {
         let maxIndex = widgetCardsArray.length - 1;
         widgetCardsArray - searchArrayAndDecrement(index, maxIndex, widgetName);
         totalOrder = calculateTotalOrder(widgetCardsArray);
-    
+
         // update local storage
         localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
         // update DOM with updated widget array
         displayTotalOrder(totalOrder);
         displayWidgetList(widgetCardsArray);
-    
+
     }
-    
+
     let searchArrayAndDecrement = function (index, maxIndex, widgetName) {
         console.log('init searchArrayAndDecrement');
         let checkName = widgetName;
@@ -331,7 +331,7 @@ $(document).ready(function () {
         } // end case: widget at current index is not similar to the widget to decremenet && there are no more indecies to check
         return widgetCardsArray;
     }
-    
+
     let searchArrayAndDelete = function (index, maxIndex, widgetName) {
         console.log('init searchArrayAndDelete');
         let checkName = widgetName;
@@ -359,7 +359,7 @@ $(document).ready(function () {
         } // end case: widget at current index is not similar to the widget to delete && there are no more indecies to check
         return widgetCardsArray;
     }
-    
+
     let searchArrayAndIncrement = function (index, maxIndex, widgetToAdd) {
         console.log(`init searchArray at index ${index}`);
         let checkName = widgetToAdd.name;
@@ -401,16 +401,16 @@ $(document).ready(function () {
         } // end case: widget at current index is not similar to the added widget && there are no more indecies to check
         return widgetCardsArray;
     }
-    
+
     let resetLocalStorage = function () {
         localStorage.setItem("widgetCardsArray", JSON.stringify([]));
     }
-    
+
     let updateLocalStorage = function (widgetCardsArray) {
         localStorage.setItem("widgetCardsArray", JSON.stringify(widgetCardsArray));
     }
     // END DECLARE FUNCTIONS
-    
+
     // INITIALIZE ORDER DATA
     let widgetCardsArray = getWidgetCardsArrayFromLocalStorage();
     let totalOrder = calculateTotalOrder(widgetCardsArray);
@@ -428,4 +428,78 @@ $(document).ready(function () {
     $(widgetSubtractButton).on("click ", handleClickSubtract);
     $(widgetSubmitButton).on("click ", function () { handleClickSubmit($(widgetsToAdd).val()) });
     // END ASSIGN EVENT LISTENERS
+
+    // ************** CART FUNCTIONS ************** //
+
+    // DECLARE VARIABLES
+    let orderForm = document.getElementById("orderForm");
+    // END DECLARE VARIABLES
+
+    let convertWidgetArrayToText = function (orderItemsArray) {
+        let orderText = [];
+        totalOrder = calculateTotalOrder(orderItemsArray);
+        for (let i = 0; i < orderItemsArray.length; i++) {
+            orderText = [...orderText, JSON.stringify(orderItemsArray[i])];
+        }
+        orderText = [...orderText, JSON.stringify(`Total widgets: ${totalOrder.totalWidgets}`), JSON.stringify(`Total price: ${totalOrder.totalPrice}`)];
+        return orderText;
+    }
+
+    let handleSubmit = function (event) {
+        return function (event) {
+            event.preventDefault();
+            console.log('init handleSubmit');
+            order = convertWidgetArrayToText(widgetCardsArray);
+
+            let body = {
+                message: {
+                    subject: "New order from the widget shop",
+                    text:
+                        `
+                                Hello, shopkeeper.
+
+                                A new order has been sent from the widget shop:
+
+                                CONTACT INFORMATION
+                                Name: ${orderForm.name.value}
+                                Company name: ${orderForm.companyName.value}
+                                Address line 1: ${orderForm.addressLine1.value}
+                                Address line 2: ${orderForm.addressLine2.value}
+                                City: ${orderForm.city.value}
+                                State: ${orderForm.state.value}
+                                Zip code: ${orderForm.zipCode.value}
+                                Telephone: ${orderForm.telephone.value}
+                                Email: ${orderForm.email.value}
+                                
+                                ORDER
+                                ${order}
+                                `
+                }
+            }
+            sendOrder(order);
+        }
+    }
+
+    let sendOrder = function (body) {
+        console.log(body);
+        // API_URL = "https://widgetShop-email-serv.herokuapp.com/handleOrder";
+        // $.ajax({
+        //     contentType: 'application/json',
+        //     type: "POST",
+        //     url: API_URL,
+        //     data: JSON.stringify(body),
+        //     dataType: "json",
+        //     crossDomain: true,
+        //     cache: false
+        // })
+        //     .done((response) => {
+        //         alert("Thank you. Your order has been sent. We will contact you to confirm your order and arrange payment.");
+        //     })
+        //     .fail((error) => {
+        //         console.log(error);
+        //         alert("Your order could not be sent. Please try again later");
+        //     })
+    }
+    $(orderForm).on("submit", handleSubmit());
+    // ************** END CART FUNCTIONS ************** //
 });
