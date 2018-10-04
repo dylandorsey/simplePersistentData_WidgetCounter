@@ -86,6 +86,46 @@
                 <p id="totalPriceDisplay">0</p>
                 <button id="buttonClearWidgets">Empty cart</button>
             </div>
+            <div>
+                <h2>Check Out</h2>
+                <form id="orderForm" class="orderForm">
+                    <h3>Contact information</h3>
+                    <p>*Name:</p>
+                    <input type="text" name="name" />
+                    <p>Company name:
+                    </p>
+                    <input type="text" name="companyName" />
+                    <p>Address line 1:
+                    </p>
+                    <input type="text" name="addressLine1" />
+                    <p>Address line 2:
+                    </p>
+                    <input type="text" name="addressLine2" />
+                    <p>City:
+                    </p>
+                    <input type="text" name="city" />
+                    <p>State:
+                    </p>
+                    <input type="text" name="state" />
+                    <p>Zip code:
+                    </p>
+                    <input type="text" name="zipCode" />
+                    <p>Telephone:
+                    </p>
+                    <input type="text" name="telephone" />
+                    <p>*Email:
+                    </p>
+                    <input type="text" name="email" />
+                    <p class="antispam">Leave this empty if you see it or your message will not be sent:
+                    </p>
+                    <input class="antispam" type="text" name="url" />
+                    <p>Aadditional comments:
+                    </p>
+                    <textarea name="message"></textarea>
+                    <br>
+                    <input id="orderFormSubmit" type="submit" value="Submit Order" />
+                </form>
+            </div>
         </div>
     </div>
     </div>
@@ -96,5 +136,7 @@
 
 <script src="http://code.jquery.com/jquery-3.3.1.min.js " integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin=" anonymous "></script>
+<script src="scripts/cart.js"></script>
 <script src="scripts/client.js"></script>
+
 </html>
