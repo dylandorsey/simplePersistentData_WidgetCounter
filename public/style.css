@@ -132,5 +132,9 @@
 }
 
 .hide {
-    display: none;
+    display: none !important
+}
+
+.description {
+    color: grey;
 }

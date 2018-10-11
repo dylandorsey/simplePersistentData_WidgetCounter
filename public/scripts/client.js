@@ -1,6 +1,8 @@
 $(document).ready(function () {
     console.log('init jq');
     // DELCARE VARIABLES
+    let readMoreButton=$(".buttonReadMore");
+    let readLessButton=$(".buttonReadLess");
     let totalPriceDisplay = $("#totalPriceDisplay");
     let totalWidgetsDisplay = $("#totalWidgetsDisplay");
     let widgetsToAdd = $("#countWidgetsToAdd ");
@@ -264,6 +266,29 @@ $(document).ready(function () {
         displayWidgetList(widgetCardsArray);
     }
 
+    let handleClickReadMore = function () {
+        console.log('init handleClickReadMore');
+        let click = $(this);
+        let description = click.closest('.card').find('.description');
+        let readMoreButton = click.closest('.card').find('.buttonReadMore');
+        let readLessButton = click.closest('.card').find('.buttonReadLess');
+        readMoreButton.addClass('hide');
+        readLessButton.removeClass('hide');
+        description.removeClass('hide');
+    }
+
+    let handleClickReadLess = function () {
+        console.log('init handleClickReadLess');
+        let click = $(this);
+        let description = click.closest('.card').find('.description');
+        let readMoreButton = click.closest('.card').find('.buttonReadMore');
+        let readLessButton = click.closest('.card').find('.buttonReadLess');
+
+        readLessButton.addClass('hide');
+        readMoreButton.removeClass('hide');
+        description.addClass('hide');
+    }
+
     let handleClickSubtract = function () {
         console.log('init handleClickSubtract');
         let click = $(this);
@@ -422,6 +447,8 @@ $(document).ready(function () {
     // END POPULATE DOM WITH WIDGET ORDER DATA
 
     // ASSIGN EVENT LISTENERS
+    $(readLessButton).on("click", handleClickReadLess);
+    $(readMoreButton).on("click", handleClickReadMore);
     $(widgetAddButton).on("click ", handleClickAdd);
     $(widgetClearButton).on("click ", function () { handleClickClearWidgets() });
     $(widgetDeleteButton).on("click ", handleClickDelete);
@@ -482,23 +509,23 @@ $(document).ready(function () {
 
     let sendOrder = function (body) {
         console.log(body);
-        // API_URL = "https://widgetShop-email-serv.herokuapp.com/handleOrder";
-        // $.ajax({
-        //     contentType: 'application/json',
-        //     type: "POST",
-        //     url: API_URL,
-        //     data: JSON.stringify(body),
-        //     dataType: "json",
-        //     crossDomain: true,
-        //     cache: false
-        // })
-        //     .done((response) => {
-        //         alert("Thank you. Your order has been sent. We will contact you to confirm your order and arrange payment.");
-        //     })
-        //     .fail((error) => {
-        //         console.log(error);
-        //         alert("Your order could not be sent. Please try again later");
-        //     })
+        API_URL = "https://widgetShop-email-serv.herokuapp.com/handleOrder";
+        $.ajax({
+            contentType: 'application/json',
+            type: "POST",
+            url: API_URL,
+            data: JSON.stringify(body),
+            dataType: "json",
+            crossDomain: true,
+            cache: false
+        })
+            .done((response) => {
+                alert("Thank you. Your order has been sent. We will contact you to confirm your order and arrange payment.");
+            })
+            .fail((error) => {
+                console.log(error);
+                alert("Your order could not be sent. Please try again later");
+            })
     }
     $(orderForm).on("submit", handleSubmit());
     // ************** END CART FUNCTIONS ************** //
